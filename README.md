@@ -1,24 +1,24 @@
 # Purana: Abyss Return
 
-这是一个基于 **HTML5 + JavaScript** 的游戏项目，使用 **Vite** 管理模块化 JS，便于依赖管理；部分独立 JS 脚本依然通过 `<script>` 引入。  
+Purana: Abyss Return is an **HTML5 + JavaScript** game project. The core modules are managed by **Vite** for modern dependency handling, while some standalone scripts are still loaded via classic `<script>` tags.
 
 ---
 
-## 🚀 运行方式
+## 🚀 Running the Game
 
-> ⚠️ **注意**：直接用 `file://` 打开 HTML 可能无法加载模块化 JS 和部分资源，推荐使用 HTTP Server。  
+> ⚠️ **Note:** Opening the HTML files via `file://` can break module loading and asset paths. Please run a local HTTP server instead.
 
-以下提供三种常见方式运行本地服务器：
+Here are three common ways to serve the project locally:
 
-### 1️⃣ VS Code Live Server 插件
-- 安装 [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) 插件  
-- 打开 [`index.html`](/index.html) 文件，右键选择 **“Open with Live Server”**  
-- 浏览器会自动打开并预览页面  
+### 1️⃣ VS Code Live Server
+- Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension.
+- Open [`index.html`](/index.html) and choose **“Open with Live Server.”**
+- Your browser will launch and preview the page.
 
 ---
 
-### 2️⃣ Python 内置 HTTP Server
-在项目根目录运行：
+### 2️⃣ Python Built-in HTTP Server
+Run from the project root:
 
 #### Python 3
 ```bash
@@ -30,7 +30,7 @@ python -m http.server 8000
 python -m SimpleHTTPServer 8000
 ```
 
-然后访问：
+Then visit:
 
 ```
 http://localhost:8000
@@ -38,30 +38,30 @@ http://localhost:8000
 
 ---
 
-### 3️⃣ Node.js 工具
+### 3️⃣ Node.js Tools
 
-#### 使用 `serve`
+#### Using `serve`
 ```bash
-# 全局安装（只需一次）
+# install once globally
 npm install -g serve
 
-# 启动服务器（当前目录）
+# serve the current directory
 serve .
 
-# 或指定端口
+# or specify a port
 serve -l 8000
 ```
 
-#### 使用 `http-server`
+#### Using `http-server`
 ```bash
-# 全局安装
+# install once globally
 npm install -g http-server
 
-# 启动服务器
+# start the server
 http-server -p 8000
 ```
 
-然后访问：
+Then visit:
 
 ```
 http://localhost:8000
@@ -69,46 +69,60 @@ http://localhost:8000
 
 ---
 
-## 🛠 使用 Vite 开发
->⚠️ 需要Node.js环境  
-⚠️ 项目中已附带一份打包好的 `main.js`，如果你只运行游戏而不修改 `src/` 下的模块化代码，则无需重新打包。
+## 🛠 Vite Development
 
-### 安装依赖
+> ⚠️ Requires Node.js.  
+⚠️ A prebuilt `main.js` is already included. If you only want to play the game and you are not editing code in `src/`, you do not need to rebuild.
+
+### Install dependencies
 ```bash
 npm install
 ```
 
-### 启动开发服务器
+### Start the dev server
 ```bash
 npm run dev
 ```
 
-- 默认会自动打开 `index.html`  
-- 为兼容不使用Vite,暂不支持 **模块热更新 (HMR,修改源码时自动更新网页内容)**
-- 如需使用，可复制一份 `game.html` ，改名为 `test_game.html` ，将Vita入口的src改为 `src/main.js` 然后在浏览器中手动打开
-- 链接类似 `http://localhost:5173/test_game.html`  
+- Vite opens `index.html` by default.
+- To keep compatibility with non-Vite usage, **HMR is currently disabled**.
+- If you want to develop with Vite, copy `game.html` as `test_game.html` and change the Vite entry to `src/main.js`. Then open a link like:
+  `http://localhost:5173/test_game.html`
 
 ---
 
-## 📦 构建生产版本
+## 📦 Build for Production
 
-如需重新打包模块化代码：
+To rebuild the bundled modules:
 
 ```bash
 npm run build
 ```
 
-- 打包结果输出到 `dist/`  
-- 默认仅打包 `src/main.js` 及其依赖，生成 `dist/main.js`  
-- 如需打包其他入口文件，请修改 [`vite.config.js`](/vite.config.js)  
+- Output goes to `dist/`.
+- By default, only `src/main.js` and its dependencies are bundled into `dist/main.js`.
+- To add more entry points, edit [`vite.config.js`](/vite.config.js).
 
 ---
 
-## 📖 剧情数据加载说明
+## 📖 Plot Data Loading
 
-- 所有剧情文本、触发条件和交互点在 `Plot.V3/plot-data.json` 中维护，`plotData` 字段存储章节剧情，`interactions` 字段记录各关卡的剧情触发点。
-- 地图文件中的 `plot` 事件会在加载时自动剥离，仅保留非剧情事件，剧情交互由 `PlotManager` 根据章节/关卡动态注入。
-- `PlotManager` 会尊重 `PlotModeManager` 的开关设置；关闭剧情模式时，剧情交互仍会触发但不会展示文本。
-- 如需新增剧情，只需在 `plot-data.json` 中补充相应章节与关卡的定义，无需修改关卡地图文件。
+- All plot text, triggers, and interactions are managed in `Plot.V3/plot-data.json`. The `plotData` field stores chapter content; `interactions` contains per-level triggers.
+- `plot` events in map files are stripped during loading; only non-plot events remain. Plot interactions are injected by `PlotManager` based on chapter/level.
+- `PlotManager` respects `PlotModeManager` settings. When plot mode is disabled, interactions still trigger but no text is shown.
+- To add new story content, extend `plot-data.json` without editing the map files.
+
+---
+
+## 🤝 Invitation: Join the Community Agent Project
+
+We welcome community members to help design **game-specific agents** that can assist with testing, storytelling, balancing, and tooling around Purana: Abyss Return.
+
+**How you can contribute:**
+- Propose agent ideas (QA bots, narrative reviewers, balance analyzers, helper tools).
+- Implement prototypes that interact with our content and gameplay systems.
+- Share feedback on agent workflows and how they can best support creators and players.
+
+If you’re interested, feel free to open an issue or start a discussion—let’s build the next generation of creative game agents together!
 
 ---
