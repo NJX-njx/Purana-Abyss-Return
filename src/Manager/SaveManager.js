@@ -4,6 +4,7 @@ export class SaveManager {
     constructor(game, options = {}) {
         this.game = game;
         this.storageKey = options.storageKey || 'present_data';
+        this._isDev = typeof import.meta !== 'undefined' && import.meta.env ? !!import.meta.env.DEV : false;
     }
 
     _readStorage() {
@@ -78,7 +79,7 @@ export class SaveManager {
         };
 
         // 调试信息（生产环境可移除）
-        if (process.env.NODE_ENV === 'development') {
+        if (this._isDev) {
             console.log('准备保存数据:', {
                 slotId,
                 playerHp: saveData.playerHp,
@@ -96,7 +97,7 @@ export class SaveManager {
         container.saveSlots[slotIndex] = saveData;
 
         const ok = this._writeStorage(container);
-        if (ok && process.env.NODE_ENV === 'development') {
+        if (ok && this._isDev) {
             console.log('存档成功:', saveData);
         }
         return ok ? saveData : null;
@@ -116,17 +117,17 @@ export class SaveManager {
         if (!saveData) return false;
 
         try {
-            if (process.env.NODE_ENV === 'development') {
+            if (this._isDev) {
                 console.log('开始加载存档:', saveData);
             }
             
             // 1. 先加载地图
             if (mapManager && typeof mapManager.loadRoom === 'function' && saveData.layer != null && saveData.room != null) {
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`加载地图: 第${saveData.layer + 1}层 - 房间${saveData.room + 1}`);
                 }
                 await mapManager.loadRoom(saveData.layer, saveData.room);
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log('地图加载完成');
                 }
             } else {
@@ -135,13 +136,13 @@ export class SaveManager {
 
             // 2. 恢复玩家血量（其他属性通过updateState重新计算）
             if (player && saveData.playerHp != null) {
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`恢复玩家血量: ${saveData.playerHp}`);
                 }
                 player.state.hp = saveData.playerHp;
                 // 确保血量不超过最大值
                 player.state.hp = Math.min(player.state.hp, player.state.hp_max);
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`玩家血量恢复完成: ${player.state.hp}/${player.state.hp_max}`);
                 }
             } else {
@@ -150,11 +151,11 @@ export class SaveManager {
 
             // 2.5. 恢复灵魂碎片数量
             if (talentManager && saveData.soulFragments != null) {
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`恢复灵魂碎片数量: ${saveData.soulFragments}`);
                 }
                 talentManager.setFragments(saveData.soulFragments);
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`灵魂碎片恢复完成: ${talentManager.soulFragments}`);
                 }
             } else {
@@ -163,7 +164,7 @@ export class SaveManager {
 
             // 2.6. 恢复天赋等级并重新激活
             if (talentManager && saveData.talents && typeof saveData.talents === 'object') {
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log('开始恢复天赋等级:', saveData.talents);
                 }
                 
@@ -178,7 +179,7 @@ export class SaveManager {
                     if (talentManager.hasTalent(talentName) && level > 0) {
                         talentManager.levels[talentName] = level;
                         restoredCount++;
-                        if (process.env.NODE_ENV === 'development') {
+                        if (this._isDev) {
                             console.log(`恢复天赋: ${talentName} 等级 ${level}`);
                         }
                     } else {
@@ -189,7 +190,7 @@ export class SaveManager {
                 // 重新激活所有天赋效果
                 talentManager.update();
                 
-                if (process.env.NODE_ENV === 'development') {
+                if (this._isDev) {
                     console.log(`天赋恢复完成: 共恢复 ${restoredCount} 个天赋`);
                 }
             } else {
@@ -218,7 +219,7 @@ export class SaveManager {
                                 const item = new Item(itemConfig);
                                 itemManager.slots[i].setItem(item);
                                 item._slot = itemManager.slots[i];
-                                if (process.env.NODE_ENV === 'development') {
+                                if (this._isDev) {
                                     console.log(`恢复道具: ${itemData.name} 到槽位 ${i + 1}`);
                                 }
                             } else {
@@ -233,7 +234,7 @@ export class SaveManager {
             }
 
             // 4. 最终验证：确保所有系统状态正确
-            if (process.env.NODE_ENV === 'development') {
+            if (this._isDev) {
                 console.log('存档加载完成，最终状态验证:');
                 console.log(`- 玩家血量: ${player?.state?.hp}/${player?.state?.hp_max}`);
                 console.log(`- 灵魂碎片: ${talentManager?.soulFragments}`);

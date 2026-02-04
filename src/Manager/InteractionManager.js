@@ -99,7 +99,7 @@ export class Interaction extends Hitbox {
                 ctx.font = '12px Arial';
                 ctx.textAlign = 'center';
                 const labelType = matchingTag;
-                const label = labelType === 'next_room' ? (triggerable ? '传送点 (需击败所有敌人)' : '传送点 (按E键传送)') : labelType;
+                const label = labelType === 'next_room' ? (triggerable ? '传送点 (按E键传送)' : '传送点 (需击败所有敌人)') : labelType;
                 ctx.fillText(label, this.position.x + this.size.x / 2, this.position.y + this.size.y / 2);
                 console.log('交互点缺少贴图，绘制文字提示:', label);
             }

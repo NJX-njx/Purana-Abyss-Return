@@ -134,7 +134,19 @@ class KeyboardManager {
                 this.status.set(key, false);
             }
         });
-        addEventListener("keydown", (e) => { e.preventDefault(); });
+        document.addEventListener("keydown", (event) => {
+            const key = this.KEYMAP.get(event.code);
+            if (!key) return;
+            const target = event.target;
+            const isEditable = target instanceof HTMLElement
+                && (target.isContentEditable
+                    || target.tagName === 'INPUT'
+                    || target.tagName === 'TEXTAREA'
+                    || target.tagName === 'SELECT');
+            if (!isEditable) {
+                event.preventDefault();
+            }
+        });
     }
 
     isKeyDown(key) {

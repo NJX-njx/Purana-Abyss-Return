@@ -176,7 +176,7 @@ class MapManager {
             console.log('🏆 已到达最后一层，无法继续前进');
             return;
         }
-        this.loadRoom(nextLayer, nextRoom);
+        await this.loadRoom(nextLayer, nextRoom);
     }
 
     /** 获取所有方块的碰撞盒数组 */

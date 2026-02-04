@@ -46,6 +46,7 @@ class Game {
             frameTimeAccum: 0,
             lastStatsSampleTime: performance.now()
         };
+        this._battleEndedEmitted = false;
         this.loop = this.loop.bind(this);
     }
 
@@ -298,7 +299,14 @@ class Game {
                 }
             }
 
-            if (game.enemies.length == 0) bus.emit(Events.game.battle.end);
+            if (game.enemies.length === 0) {
+                if (!this._battleEndedEmitted) {
+                    bus.emit(Events.game.battle.end);
+                    this._battleEndedEmitted = true;
+                }
+            } else {
+                this._battleEndedEmitted = false;
+            }
 
             if (!this.isStopUpdate) {
                 bus.emit(Events.game.tick, { deltaTime: this.FrameTime });
