@@ -16,7 +16,7 @@ import { ItemConfigs, ItemTags, ItemTypes } from "./System/Item/ItemConfigs";
 import { SlotTypes } from "./System/Item/Slot";
 import { AttributeTypes } from "./Manager/AttributeManager";
 import { EnemyAnimationConfigs } from "./Entities/Enemys/EnemyAnimation";
-import { canvas_game, canvas_ui, ctx_game, ctx_ui, sizes } from "./Utils/canvas";
+import { getCanvasResources, sizes } from "./Utils/canvas";
 import { mouseManager } from "./System/Input/MouseManager";
 import { keyboardManager } from "./System/Input/KeyboardManager";
 import { inputManager } from "./System/Input/InputManager";
@@ -62,10 +62,7 @@ class Debug {
             AttributeTypes,
             TalentConfigs,
             EnemyAnimationConfigs,
-            canvas_game,
-            canvas_ui,
-            ctx_game,
-            ctx_ui,
+            getCanvasResources,
             sizes,
         };
     }

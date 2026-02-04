@@ -1,9 +1,22 @@
-export const canvas_game = document.getElementById('game-canvas');
-export const canvas_ui = document.getElementById('ui-canvas');
-export const ctx_game = canvas_game.getContext('2d');
-export const ctx_ui = canvas_ui.getContext('2d');
 export const sizes = { width: 1440, height: 720 };
-const viewportEl = document.querySelector('.game-viewport');
+
+export let canvas_game = null;
+export let canvas_ui = null;
+export let ctx_game = null;
+export let ctx_ui = null;
+let viewportEl = null;
+
+export function getCanvasResources() {
+    if (typeof document === 'undefined') return null;
+    if (!canvas_game) canvas_game = document.getElementById('game-canvas');
+    if (!canvas_ui) canvas_ui = document.getElementById('ui-canvas');
+    if (!canvas_game || !canvas_ui) return null;
+    if (!ctx_game) ctx_game = canvas_game.getContext('2d');
+    if (!ctx_ui) ctx_ui = canvas_ui.getContext('2d');
+    if (!viewportEl) viewportEl = document.querySelector('.game-viewport');
+    if (!ctx_game || !ctx_ui) return null;
+    return { canvas_game, canvas_ui, ctx_game, ctx_ui, viewportEl };
+}
 
 /**
  * Sync canvas internal pixel buffer size with the CSS display size.
@@ -11,6 +24,10 @@ const viewportEl = document.querySelector('.game-viewport');
  * to game canvas to emulate the original 80px left offset in design.
  */
 export function setupCanvasResize() {
+    const resources = getCanvasResources();
+    if (!resources) return () => {};
+    const { canvas_game, canvas_ui, ctx_game, ctx_ui, viewportEl } = resources;
+
     function resizeOnce() {
         if (!viewportEl) return;
 
