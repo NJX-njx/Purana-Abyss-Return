@@ -11,6 +11,6 @@
     "audit:plot": "node scripts/plot-audit.js"
   },
   "devDependencies": {
-    "vite": "^7.1.2"
+    "vite": "^7.1.11"
   }
 }
